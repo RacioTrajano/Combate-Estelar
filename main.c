@@ -8,37 +8,38 @@ typedef struct nave{
   int missil;
 }ship;
 
-ship operacoes(ship alterada){
+ship atirador(ship atirador, char acao){
 
-char arma;
-int municao=1;
-scanf(" %c", &arma);
-if (arma == 'M'){
-  if (alterada.missil>0){
-    alterada.armadura =alterada.armadura -20;
-    alterada.missil =alterada.missil -1;
+if (acao == 'M'){
+  if (atirador.missil >0){
+  atirador.missil = atirador.missil -1;
   }
-  else {
-    printf("Míssil sem munição\n");
-  }
+  else (printf("Míssil sem munição!\n"));
 }
-if (arma == 'C'){
-  if (alterada.canhao >0){
-    if (alterada.escudo > 0){
-      alterada.escudo = alterada.escudo - 10;
-      alterada.canhao = alterada.canhao -1;
-    }
-    if (alterada.escudo ==0){
-      alterada.armadura = alterada.armadura -10;
-    }
-    
+if (acao == 'C'){
+  if (atirador.canhao >0){
+  atirador.canhao = atirador.canhao -1;
   }
-  else {
-    printf("Canhão sem munição!\n");}
+  else (printf("Canhão sem munição!\n"));
 }
-  
+  return  atirador;
+}
 
-  return alterada;
+ship alvo(ship alvo, char acao){
+
+if (acao == 'M'){
+ alvo.armadura = alvo.armadura -20;
+}
+if (acao == 'C'){
+  if (alvo.escudo > 0){
+    alvo.escudo =alvo.escudo - 10;
+  }
+
+  else {alvo.armadura = alvo.armadura -10;}
+}
+
+
+  return alvo;
 }
 
 
@@ -47,6 +48,7 @@ int main () {
 
   ship E;
   ship K;
+  char acao;
   char nave;
   int N;
 
@@ -58,23 +60,33 @@ scanf("%d %d %d %d", &K.armadura,&K.escudo, &K.canhao, &K.missil);
 
 for (int i=0; i<N; i++)
 {
-  scanf(" %c", &nave);
-  if( nave == 'E'){
-    E = operacoes(E);
+
+ scanf(" %c", &nave);
+ scanf(" %c", &acao);
+
+
+ if (nave == 'E'){
+   E = atirador(E, acao);
+   K = alvo (K, acao);
+   if (K.armadura == 0){
+     printf("Enterprise vence!\n");
+     break;
+   }
+ }
+
+
+ if (nave == 'K'){
+    K = atirador (K, acao);
+    E = alvo (E, acao);
     if (E.armadura == 0){
       printf("Klingons vencem!\n");
       break;
     }
-  }
-  if( nave == 'K'){
-    K = operacoes(K);
-    if (K.armadura ==0){
-      printf("Enterprise vence!\n");
-      break;
-    }
-  }
+ }
 
 }
+
+
 if (K.armadura >0 && E.armadura >0)
 printf("Empate!\n");
 
