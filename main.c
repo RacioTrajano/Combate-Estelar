@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 
 typedef struct nave{
@@ -8,34 +9,42 @@ typedef struct nave{
   int missil;
 }ship;
 
-ship atirador(ship atirador, char acao){
+ship atirador(ship atirador, char acao, int *mun_m, int *mun_c){
 
 if (acao == 'M'){
   if (atirador.missil >0){
   atirador.missil = atirador.missil -1;
   }
-  else (printf("Míssil sem munição!\n"));
+  else {
+    printf("Míssil sem munição!\n");
+    *mun_m = 0;
+    }
 }
 if (acao == 'C'){
   if (atirador.canhao >0){
   atirador.canhao = atirador.canhao -1;
   }
-  else (printf("Canhão sem munição!\n"));
+  else {
+    printf("Canhão sem munição!\n");
+    *mun_c =0;
+    }
 }
   return  atirador;
 }
 
-ship alvo(ship alvo, char acao){
+ship alvo(ship alvo, char acao, int *mun_m, int *mun_c){
 
-if (acao == 'M'){
+if (acao == 'M' && *mun_m>0){
  alvo.armadura = alvo.armadura -20;
 }
 if (acao == 'C'){
-  if (alvo.escudo > 0){
+  if (alvo.escudo > 0 && *mun_c >0){
     alvo.escudo =alvo.escudo - 10;
   }
 
-  else {alvo.armadura = alvo.armadura -10;}
+  else if(alvo.escudo <= 0 && *mun_c >0) {
+    alvo.armadura = alvo.armadura -10;
+    }
 }
 
 
@@ -51,6 +60,10 @@ int main () {
   char acao;
   char nave;
   int N;
+  int *municao_missil = calloc (1,sizeof(int));
+  *municao_missil =1;
+  int *municao_canhao = calloc (1, sizeof(int));
+  *municao_canhao =1;
 
 scanf("%d", &N);
 
@@ -66,9 +79,9 @@ for (int i=0; i<N; i++)
 
 
  if (nave == 'E'){
-   E = atirador(E, acao);
-   K = alvo (K, acao);
-   if (K.armadura == 0){
+   E = atirador(E, acao,municao_missil, municao_canhao);
+   K = alvo (K, acao, municao_missil, municao_canhao);
+   if (K.armadura <= 0){
      printf("Enterprise vence!\n");
      break;
    }
@@ -76,9 +89,9 @@ for (int i=0; i<N; i++)
 
 
  if (nave == 'K'){
-    K = atirador (K, acao);
-    E = alvo (E, acao);
-    if (E.armadura == 0){
+    K = atirador (K, acao,municao_missil, municao_canhao);
+    E = alvo (E, acao,municao_missil, municao_canhao);
+    if (E.armadura <= 0){
       printf("Klingons vencem!\n");
       break;
     }
